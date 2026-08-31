@@ -9,6 +9,9 @@ public class Mago : Heroi {
             ataque = 0;
         }
         alvo.Vida -= ataque;
+        if(alvo.Vida < 0) {
+            alvo.Vida = 0;
+        }
         Console.WriteLine($"{Nome} atacou {alvo.Nome} causando {ataque} de dano!");   
     }   
 

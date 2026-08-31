@@ -2,7 +2,10 @@ public class CombateService {
 
     private Heroi Heroi { get; set; }
     private List<Monstro> Monstros { get; set; } = new List<Monstro>();
-    
+
+    public CombateService(Heroi heroi) {
+        Heroi = heroi;
+    }
 
     public void AdicionarMontro(Monstro monstro) {
         Monstros.Add(monstro);
@@ -45,25 +48,30 @@ public class CombateService {
     }
 
     public void ExecutarTurnoHeroi(Heroi heroi, List<Monstro> monstros) {
-        Console.WriteLine($"Sua acao, {heroi.Nome}:");
+        Console.WriteLine($"\nSua acao, {heroi.Nome}:");
         Console.WriteLine("1. Atacar");
         Console.WriteLine("2. Usar Habilidade Especial");
-        int escolha = int.Parse(Console.ReadLine());
+        Console.Write("Escolha sua acao: ");
+        
+        if (!int.TryParse(Console.ReadLine(), out int escolha)) {
+            Console.WriteLine("Escolha inválida. Tente novamente.");
+            return;
+        }
+
+        Monstro alvo = EscolherAlvo(monstros);
+        if (alvo == null) return;
 
         switch (escolha) {
-        case 1:
-                EscolherAlvo(monstros);
-                heroi.Atacar(EscolherAlvo(monstros));
-        break;
-        case 2:
-                EscolherAlvo(monstros);
-                heroi.UsarHabilidadeEspecial(EscolherAlvo(monstros));
-        break;
-        default:
+            case 1:
+                heroi.Atacar(alvo);
+                break;
+            case 2:
+                heroi.UsarHabilidadeEspecial(alvo);
+                break;
+            default:
                 Console.WriteLine("Escolha inválida. Tente novamente.");
-        break;
+                break;
         }
-        
     }
 
     public void ExecutarTurnoMonstro(Monstro monstro) {
@@ -72,33 +80,39 @@ public class CombateService {
 
         if (sorteio < 0.5) {
             monstro.Atacar(Heroi);
-        }else {
+        } else {
             monstro.UsarHabilidadeEspecial(Heroi);
         }
     }
+
     public void MostrarMonstros(List<Monstro> monstros) {
         var monstrosVivos = monstros.Where(m => m.EstaVivo()).ToList();
 
-        Console.WriteLine("Monstros disponíveis:");
-        int contador = 1;
-        foreach (var monstro in monstrosVivos) {
-        Console.WriteLine($"{contador} -");
-        monstro.MostrarStatus();
-        contador++;
+        Console.WriteLine("\n--- Inimigos em Combate ---");
+        for (int i = 0; i < monstrosVivos.Count; i++) {
+            var monstro = monstrosVivos[i];
+            Console.WriteLine($"[{i + 1}] {monstro.Nome} | Vida: {monstro.Vida}/{monstro.VidaMaxima} | Defesa: {monstro.Defesa}");
         }
+        Console.WriteLine("---------------------------");
     }
 
     public Monstro EscolherAlvo(List<Monstro> monstros) {
-        MostrarMonstros(monstros);
-        if(monstros.Count == 0) {
+        var monstrosVivos = monstros.Where(m => m.EstaVivo()).ToList();
+
+        if (monstrosVivos.Count == 0) {
             Console.WriteLine("Todos os monstros foram derrotados!");
             return null;
-        } else {
-            Console.WriteLine("Escolha o número do monstro que deseja atacar:");
-            int escolhaM = int.Parse(Console.ReadLine());
-            return monstros[escolhaM - 1];
         }
 
+        MostrarMonstros(monstros);
+
+        Console.Write("Escolha o número do monstro que deseja atacar: ");
+        if (int.TryParse(Console.ReadLine(), out int escolhaM) && escolhaM >= 1 && escolhaM <= monstrosVivos.Count) {
+            return monstrosVivos[escolhaM - 1];
+        }
+
+        Console.WriteLine("Alvo inválido! Atacando o primeiro disponível...");
+        return monstrosVivos[0];
     }
 
     public bool VerificarFimDeCombate() {
