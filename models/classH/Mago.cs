@@ -1,6 +1,6 @@
 public class Mago : Heroi {   
-    public Mago(string nome, float vida, int vidaMaxima, float forca, int defesa, int nivel = 1, int xP = 0, float multiplicador = 1.5f) 
-                                            : base(nome, vida, vidaMaxima, forca , defesa, nivel, xP, multiplicador: multiplicador) {
+    public Mago(string nome, float vida, int vidaMaxima, float forca, int defesa, float velocidade, int nivel = 1, int xP = 0, float multiplicador = 1.5f) 
+                                            : base(nome, vida, vidaMaxima, forca , defesa, velocidade, nivel, xP, multiplicador: multiplicador) {
     }
 
     public override void Atacar(Personagem alvo) {
@@ -18,6 +18,9 @@ public class Mago : Heroi {
             ataque = 0;
         }
         alvo.Vida -= ataque;
+        if(alvo.Vida < 0) {
+            alvo.Vida = 0;
+        }
         Console.WriteLine($"{Nome} usou sua habilidade especial contra {alvo.Nome} causando {ataque} de dano!");
     }
 

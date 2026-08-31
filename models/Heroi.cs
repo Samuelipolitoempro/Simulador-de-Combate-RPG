@@ -2,20 +2,23 @@ public abstract class Heroi : Personagem {
 
     public int Nivel { get; set; } = 1;
     public int XP { get; set; } = 0;
-    public Heroi(string nome, float vida, int vidaMaxima, float forca, int defesa, int nivel = 1, int xP = 0, float multiplicador = 1.5f) 
-                                        : base(nome, vida, vidaMaxima, forca, defesa, multiplicador: multiplicador) {
+    public Heroi(string nome, float vida, int vidaMaxima, float forca, int defesa, float velocidade, int nivel = 1, int xP = 0, float multiplicador = 1.0f) 
+                                        : base(nome, vida, vidaMaxima, forca, defesa, velocidade, multiplicador: multiplicador) {
         Nivel = nivel;
         XP = xP;
     }
 
-    public void GanharXP(int quantidade) {
-        XP += quantidade;
+    public void GanharXP(int xpTotal) {
+        XP += xpTotal;
 
         while (XP >= 100)
         {
             XP -= 100;
             SubirNivel();
         }
+    }public void AumentarMultiplicadorDano(float bonus) {
+        Multiplicador += bonus;
+        Console.WriteLine($"🎁 {Nome} encontrou um item poderoso! Multiplicador de dano agora é {Multiplicador:F1}x!");
     }
 
     public void SubirNivel() {
@@ -28,9 +31,6 @@ public abstract class Heroi : Personagem {
         Console.WriteLine($"{Nome} subiu para o nível {Nivel}!");
     }
 
-    public abstract void Atacar(Personagem alvo);
-    public abstract void UsarHabilidadeEspecial(Personagem alvo);
-
     public override void MostrarStatus() {
         Console.WriteLine($"Nome: {Nome}");
         Console.WriteLine($"Vida: {Vida}/{VidaMaxima}");
@@ -38,6 +38,8 @@ public abstract class Heroi : Personagem {
         Console.WriteLine($"Defesa: {Defesa}");
         Console.WriteLine($"Nível: {Nivel}");
         Console.WriteLine($"XP: {XP}/100");
+        Console.WriteLine($"Velocidade: {Velocidade}");
+        Console.WriteLine($"---------------------------------");
     }
     
 }
