@@ -110,3 +110,6 @@ if (!heroi.EstaVivo())
     Console.WriteLine("\n💀 FIM DE JOGO! Seu herói caiu em combate.");
     Console.ResetColor();
 }
+
+
+Console.WriteLine("obrigado por jogar");
